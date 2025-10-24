@@ -1,317 +1,156 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Employee Dashboard</title>
-<style>
-  :root{--bg:#f5f7fb; --card:#ffffff; --muted:#6b7280; --accent:#2563eb; --danger:#ef4444; --success:#10b981;}
-  *{box-sizing:border-box}
-  body{font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial; margin:0; background:linear-gradient(180deg,#eef2ff, #f5f7fb); color:#0f172a; min-height:100vh;}
-  .container{max-width:1200px; margin:28px auto; padding:20px;}
-  header {display:flex; gap:16px; align-items:center; justify-content:space-between; margin-bottom:18px;}
-  .title {display:flex; gap:12px; align-items:center;}
-  .logo {width:56px; height:56px; background:var(--card); border-radius:10px; display:flex; align-items:center; justify-content:center; font-weight:700; box-shadow:0 6px 18px rgba(15,23,42,0.06);}
-  h1{font-size:20px; margin:0;}
-  .subtitle{font-size:13px; color:var(--muted); margin-top:2px;}
-  .controls {display:flex; gap:10px; align-items:center;}
-  .btn{background:var(--accent); color:white; padding:8px 12px; border-radius:8px; border:0; cursor:pointer; font-weight:600;}
-  .btn.secondary{background:transparent; color:var(--accent); border:1px solid rgba(37,99,235,0.14)}
-  .search {display:flex; gap:8px; align-items:center; background:var(--card); padding:8px 10px; border-radius:10px; box-shadow:0 4px 10px rgba(2,6,23,0.04);}
-  .search input{border:0; outline:0; font-size:14px; min-width:200px;}
-  .card {background:var(--card); border-radius:14px; padding:14px; box-shadow:0 8px 24px rgba(3,7,18,0.04);}
-  .toolbar {display:flex; gap:8px; align-items:center; margin-bottom:12px; flex-wrap:wrap}
-  table{width:100%; border-collapse:collapse; font-size:14px;}
-  thead th{ text-align:left; padding:10px 12px; color:var(--muted); font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:0.6px;}
-  tbody td{padding:10px 12px; border-top:1px solid #edf2f7;}
-  tbody tr:hover{background:rgba(37,99,235,0.03)}
-  .pill {display:inline-block; padding:4px 8px; border-radius:999px; font-size:13px; font-weight:600}
-  .pill.signed{background:rgba(16,185,129,0.12); color:var(--success)}
-  .pill.not-signed{background:rgba(239,68,68,0.08); color:var(--danger)}
-  .pill.status-active{background:rgba(37,99,235,0.08); color:var(--accent)}
-  .pill.status-left{background:rgba(107,114,128,0.08); color:var(--muted)}
-  .compact td:nth-child(n+6){display:none}
-  @media (max-width:900px){
-    table, thead, tbody, th, td, tr {display:block;}
-    thead {display:none;}
-    tbody tr {margin-bottom:12px; background:var(--card); border-radius:10px; padding:10px;}
-    tbody td{display:flex; justify-content:space-between; padding:6px 8px; border:0; border-bottom:1px solid #f1f5f9;}
-    tbody td:last-child{border-bottom:0;}
-  }
-  .modal-backdrop{position:fixed; inset:0; background:rgba(2,6,23,0.45); display:none; align-items:center; justify-content:center; z-index:60}
-  .modal{background:var(--card); width:780px; max-width:95%; border-radius:12px; padding:16px; box-shadow:0 20px 60px rgba(2,6,23,0.3);}
-  .form-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:10px;}
-  .form-row{display:flex; flex-direction:column; gap:6px;}
-  label{font-size:13px; color:var(--muted);}
-  input[type="text"], input[type="email"], input[type="tel"], input[type="date"], select{padding:8px 10px; border-radius:8px; border:1px solid #e6edf5; background:transparent;}
-  .modal-footer{display:flex; gap:10px; justify-content:flex-end; margin-top:10px}
-  .muted{color:var(--muted); font-size:13px}
-  .tiny{font-size:12px; color:var(--muted)}
-  .u-hidden{display:none}
-</style>
+  <meta charset="UTF-8" />
+  <title>Employee Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: #f6f7fb;
+    }
+    h1 { text-align: center; color: #333; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+      text-align: center;
+    }
+    th {
+      background-color: #0078D7;
+      color: white;
+    }
+    tr:hover { background-color: #f1f1f1; }
+    .form-container {
+      margin: 20px auto;
+      padding: 20px;
+      background: #fff;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      border-radius: 8px;
+      width: 90%;
+    }
+    input, select, button {
+      padding: 8px;
+      margin: 5px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #0078D7;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover { background-color: #005fa3; }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <div class="title">
-        <div class="logo">ED</div>
-        <div>
-          <h1>Employee Dashboard</h1>
-          <div class="subtitle">Manage staff — add records. Data saved locally (no DB).</div>
-        </div>
-      </div>
+  <h1>Employee Dashboard</h1>
 
-      <div class="controls">
-        <div class="search card" title="Search">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="opacity:.7"><path d="M21 21l-4.35-4.35" stroke="#111827" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="11" cy="11" r="6" stroke="#111827" stroke-width="1.6"/></svg>
-          <input id="searchInput" placeholder="Search name, job, phone or email..." />
-        </div>
-        <button class="btn" id="newBtn">+ New Employee</button>
-      </div>
-    </header>
-
-    <section class="card">
-      <div class="toolbar">
-        <div style="display:flex; gap:8px; align-items:center">
-          <button class="btn secondary" data-filter="all">All</button>
-          <button class="btn secondary" data-filter="active">Active</button>
-          <button class="btn secondary" data-filter="left">Left</button>
-        </div>
-        <div style="margin-left:auto; display:flex; gap:8px; align-items:center">
-          <button class="btn secondary" id="toggleCompactBtn">Toggle Compact</button>
-          <button class="btn secondary" id="exportCsvBtn">Export CSV</button>
-          <label class="btn secondary" for="importCsvInput" style="cursor:pointer">Import CSV</label>
-          <input id="importCsvInput" type="file" accept=".csv" class="u-hidden" />
-        </div>
-      </div>
-
-      <div style="overflow:auto">
-        <table id="employeeTable" aria-describedby="Employee records">
-          <thead>
-            <tr>
-              <th>Serial</th>
-              <th>Name</th>
-              <th>Job Title</th>
-              <th>Start Date</th>
-              <th>Residence</th>
-              <th>Phone</th>
-              <th>Email</th>
-              <th>Contract Type</th>
-              <th>Signed</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody id="tableBody"></tbody>
-        </table>
-      </div>
-    </section>
+  <div class="form-container">
+    <input id="name" placeholder="Name" />
+    <select id="jobTitle">
+      <option>School Supervisor</option>
+      <option>Instructor</option>
+      <option>Co-Instructor</option>
+    </select>
+    <select id="contractType">
+      <option>Full-time</option>
+      <option>Project-based</option>
+    </select>
+    <input id="startDate" type="date" />
+    <input id="location" placeholder="Location" />
+    <input id="phone" placeholder="Phone" />
+    <input id="email" placeholder="Email" />
+    <select id="signedContract">
+      <option>Yes</option>
+      <option>No</option>
+    </select>
+    <select id="status">
+      <option>Active</option>
+      <option>Left</option>
+    </select>
+    <button onclick="addEmployee()">Add Employee</button>
   </div>
 
-  <!-- Modal: Add only -->
-  <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-hidden="true">
-    <div class="modal" role="document" aria-labelledby="modalTitle">
-      <h2 id="modalTitle">New Employee</h2>
-      <div class="muted tiny" id="modalHint">Fill required fields and Save.</div>
+  <table id="employeeTable">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Job Title</th>
+        <th>Contract Type</th>
+        <th>Start Date</th>
+        <th>Location</th>
+        <th>Phone</th>
+        <th>Email</th>
+        <th>Signed Contract</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 
-      <form id="employeeForm" class="form-grid" onsubmit="return false;">
-        <div class="form-row">
-          <label for="name">Name *</label>
-          <input id="name" name="name" type="text" required />
-        </div>
+  <script>
+    const apiURL = 'https://script.googleusercontent.com/macros/echo?user_content_key=AehSKLjZeyUHcNVRRLNu_607aRXrn9wugKLxYTpwn1V2Sq0oxi0dixnLLuc8zndceiOIlP4zXhiIpfgmbggT_jE1-Cz5ecxJqf--rAaMY4CQAsfXNlTLp8mbuNYLaglyO2PWPqFSRrp0gg-xE4LSKzDeNM4QMtSZje__RU8GUo7tCqLeJ38um3tOYcajIOoZqTVhRza9N5BHX6kf2a_9nb0qST7hEjlj2WArr0zyaOcplFuoVUhewlWZHDpzWJH8QAdsuurO1umzhyeywE_PgIdwtoIa2xPitQ&lib=MlQeJgZP0XmbrP4ulx5ep4-141rqerMCH'; // Replace with Google Apps Script URL
 
-        <div class="form-row">
-          <label for="jobTitle">Job title</label>
-          <input id="jobTitle" name="jobTitle" />
-        </div>
-        <div class="form-row">
-          <label for="startDate">Start date</label>
-          <input id="startDate" name="startDate" type="date" />
-        </div>
+    async function loadEmployees() {
+      const res = await fetch(apiURL);
+      const data = await res.json();
+      const tbody = document.querySelector("#employeeTable tbody");
+      tbody.innerHTML = '';
+      data.slice(1).forEach((row, index) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${row[0] || index + 1}</td>
+          <td>${row[1]}</td>
+          <td>${row[2]}</td>
+          <td>${row[3]}</td>
+          <td>${row[4]}</td>
+          <td>${row[5]}</td>
+          <td>${row[6]}</td>
+          <td>${row[7]}</td>
+          <td>${row[8]}</td>
+          <td>${row[9]}</td>
+          <td><button onclick="alert('Edit not implemented')">Edit</button> 
+              <button onclick="alert('Delete not implemented')">Delete</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
 
-        <div class="form-row">
-          <label for="residenceArea">Residence area</label>
-          <input id="residenceArea" name="residenceArea" />
-        </div>
-        <div class="form-row">
-          <label for="phone">Phone</label>
-          <input id="phone" name="phone" type="tel" />
-        </div>
+    async function addEmployee() {
+      const newEmployee = {
+        id: Date.now(),
+        name: document.getElementById("name").value,
+        jobTitle: document.getElementById("jobTitle").value,
+        contractType: document.getElementById("contractType").value,
+        startDate: document.getElementById("startDate").value,
+        location: document.getElementById("location").value,
+        phone: document.getElementById("phone").value,
+        email: document.getElementById("email").value,
+        signedContract: document.getElementById("signedContract").value,
+        status: document.getElementById("status").value,
+      };
 
-        <div class="form-row">
-          <label for="email">Email</label>
-          <input id="email" name="email" type="email" />
-        </div>
-        <div class="form-row">
-          <label for="contractType">Contract type</label>
-          <select id="contractType" name="contractType">
-            <option value="">-- choose --</option>
-            <option>Full-time</option>
-            <option>Part-time</option>
-            <option>Temporary</option>
-            <option>Contractor</option>
-          </select>
-        </div>
+      await fetch(apiURL, {
+        method: 'POST',
+        body: JSON.stringify(newEmployee)
+      });
 
-        <div class="form-row">
-          <label for="contractSigned">Contract signed</label>
-          <input id="contractSigned" name="contractSigned" type="checkbox" />
-        </div>
-        <div class="form-row">
-          <label for="employmentStatus">Employment status</label>
-          <select id="employmentStatus" name="employmentStatus">
-            <option>Active</option>
-            <option>Left</option>
-          </select>
-        </div>
+      alert("Employee Added!");
+      loadEmployees();
+    }
 
-      </form>
-
-      <div class="modal-footer">
-        <button class="btn secondary" id="cancelModal">Cancel</button>
-        <button class="btn" id="saveModal">Save</button>
-      </div>
-    </div>
-  </div>
-
-<script>
-const STORAGE_KEY = "employees_v1";
-let employees = [];
-let lastId = 0;
-let currentFilter = "all";
-let compact = false;
-
-/* Helpers */
-function saveToStorage(){ localStorage.setItem(STORAGE_KEY, JSON.stringify({lastId, employees})); }
-function loadFromStorage(){ const raw = localStorage.getItem(STORAGE_KEY); if (!raw) return; try{ const parsed=JSON.parse(raw); employees=parsed.employees||[]; lastId=parsed.lastId|| (employees.length? Math.max(...employees.map(e=>e.id)) : 0);}catch(e){console.error(e)}}
-function formatDate(d){ if (!d) return ""; const dt=new Date(d); if (isNaN(dt)) return d; return dt.toLocaleDateString(); }
-function sanitize(s){ return (s||"").toString().trim(); }
-
-/* Render */
-const tableBody = document.getElementById("tableBody");
-function render(){
-  tableBody.innerHTML = "";
-  const q = document.getElementById("searchInput").value.trim().toLowerCase();
-  const filtered = employees.filter(emp=>{
-    if (currentFilter === "active" && emp.employmentStatus !== "Active") return false;
-    if (currentFilter === "left" && emp.employmentStatus !== "Left") return false;
-    if (!q) return true;
-    const hay = `${emp.name} ${emp.jobTitle} ${emp.phone} ${emp.email} ${emp.residenceArea}`.toLowerCase();
-    return hay.includes(q);
-  });
-  filtered.sort((a,b)=>a.id - b.id);
-  for (const emp of filtered){
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${emp.id}</td>
-      <td>${escapeHtml(emp.name)}</td>
-      <td>${escapeHtml(emp.jobTitle||"")}</td>
-      <td>${formatDate(emp.startDate)}</td>
-      <td>${escapeHtml(emp.residenceArea||"")}</td>
-      <td>${escapeHtml(emp.phone||"")}</td>
-      <td>${escapeHtml(emp.email||"")}</td>
-      <td>${escapeHtml(emp.contractType||"")}</td>
-      <td>${emp.contractSigned ? '<span class="pill signed">Yes</span>' : '<span class="pill not-signed">No</span>'}</td>
-      <td>${emp.employmentStatus === "Active" ? '<span class="pill status-active">Active</span>' : '<span class="pill status-left">Left</span>'}</td>
-    `;
-    tableBody.appendChild(tr);
-  }
-  const table = document.getElementById("employeeTable");
-  if (compact) table.classList.add("compact"); else table.classList.remove("compact");
-}
-
-/* CRUD (Add only) */
-function addEmployee(data){ lastId += 1; const newEmp = { id:lastId, createdAt:new Date().toISOString(), ...data }; employees.push(newEmp); saveToStorage(); render(); }
-
-/* UI actions */
-const modalBackdrop = document.getElementById("modalBackdrop");
-const employeeForm = document.getElementById("employeeForm");
-document.getElementById("newBtn").addEventListener("click", openModal);
-document.getElementById("cancelModal").addEventListener("click", closeModal);
-document.getElementById("saveModal").addEventListener("click", onSave);
-document.querySelectorAll('[data-filter]').forEach(btn=>{ btn.addEventListener('click', ()=>{ currentFilter = btn.getAttribute('data-filter'); document.querySelectorAll('[data-filter]').forEach(b=>b.style.opacity=0.9); btn.style.opacity = 1; render(); })});
-document.getElementById("searchInput").addEventListener("input", ()=>render());
-document.getElementById("toggleCompactBtn").addEventListener("click", ()=>{ compact = !compact; render(); });
-
-/* import/export */
-document.getElementById("exportCsvBtn").addEventListener("click", exportCsv);
-document.getElementById("importCsvInput").addEventListener("change", function(e){
-  const file = e.target.files[0]; if (!file) return;
-  const reader = new FileReader();
-  reader.onload = (ev)=>{ try{ importCsv(ev.target.result); alert("Imported successfully"); e.target.value=""; }catch(err){ alert("Failed to import: "+err.message) } };
-  reader.readAsText(file);
-});
-
-/* modal */
-function openModal(){ modalBackdrop.style.display="flex"; modalBackdrop.setAttribute('aria-hidden','false'); employeeForm.reset(); document.getElementById("employmentStatus").value="Active"; document.getElementById("name").focus(); }
-function closeModal(){ modalBackdrop.style.display="none"; modalBackdrop.setAttribute('aria-hidden','true'); }
-
-/* save */
-function onSave(){
-  const data = {
-    name: sanitize(document.getElementById("name").value),
-    jobTitle: sanitize(document.getElementById("jobTitle").value),
-    startDate: document.getElementById("startDate").value || "",
-    residenceArea: sanitize(document.getElementById("residenceArea").value),
-    phone: sanitize(document.getElementById("phone").value),
-    email: sanitize(document.getElementById("email").value),
-    contractType: document.getElementById("contractType").value,
-    contractSigned: !!document.getElementById("contractSigned").checked,
-    employmentStatus: document.getElementById("employmentStatus").value || "Active"
-  };
-  if (!data.name){ alert("Please enter name."); return; }
-  if (data.email && !validateEmail(data.email)){ alert("Please enter a valid email."); return; }
-  addEmployee(data);
-  closeModal();
-}
-
-/* CSV helpers */
-function exportCsv(){
-  if (!employees.length){ alert("No employees to export"); return; }
-  const headers = ["id","name","jobTitle","startDate","residenceArea","phone","email","contractType","contractSigned","employmentStatus","createdAt"];
-  const rows = employees.map(e => headers.map(h => csvEscape(e[h])));
-  const csv = [headers, ...rows].map(r => r.join(",")).join("\n");
-  const blob = new Blob([csv], {type: "text/csv;charset=utf-8;"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a"); a.href = url; a.download = "employees.csv"; a.click(); URL.revokeObjectURL(url);
-}
-function importCsv(text){
-  const lines = text.split(/\r?\n/).filter(l=>l.trim());
-  if (!lines.length) throw new Error("Empty file");
-  const headers = lines[0].split(",").map(h=>h.trim());
-  const rows = lines.slice(1).map(l=>parseCsvLine(l));
-  for (const cols of rows){
-    const obj = {}; headers.forEach((h,i)=>obj[h]=cols[i] ?? "");
-    let id = Number(obj.id) || 0;
-    if (!id || employees.some(e=>e.id===id)) id = ++lastId; else lastId = Math.max(lastId,id);
-    const emp = {
-      id,
-      name: obj.name || "",
-      jobTitle: obj.jobTitle || "",
-      startDate: obj.startDate || "",
-      residenceArea: obj.residenceArea || "",
-      phone: obj.phone || "",
-      email: obj.email || "",
-      contractType: obj.contractType || "",
-      contractSigned: (obj.contractSigned?.toLowerCase?.() === "true"),
-      employmentStatus: obj.employmentStatus || "Active",
-      createdAt: obj.createdAt || new Date().toISOString()
-    };
-    employees.push(emp);
-  }
-  saveToStorage();
-  render();
-}
-
-/* utils */
-function csvEscape(v){ if (v===null || v===undefined) return ""; const s = String(v).replace(/"/g,'""'); if (s.includes(",") || s.includes("\n") || s.includes('"')) return `"${s}"`; return s; }
-function parseCsvLine(line){ const res=[]; let cur="", inQ=false; for (let i=0;i<line.length;i++){ const ch=line[i]; if (ch==='\"'){ if (inQ && i+1<line.length && line[i+1]==='\"'){ cur+='\"'; i++; continue; } inQ=!inQ; continue; } if (ch===',' && !inQ){ res.push(cur); cur=""; continue;} cur+=ch; } res.push(cur); return res; }
-function validateEmail(e){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
-function escapeHtml(s){ if (!s) return ""; return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;"); }
-
-loadFromStorage(); render();
-modalBackdrop.addEventListener("click", (e)=>{ if (e.target === modalBackdrop) closeModal(); });
-document.addEventListener("keydown", (e)=>{ if (e.key === "Escape") closeModal(); });
-
-</script>
+    loadEmployees();
+  </script>
 </body>
 </html>
+
